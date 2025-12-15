@@ -45,6 +45,16 @@ PyNote sits in the sweet spot:
 ![Main](images/pynote_saave.jpg)<br>
 *Native OS file dialogs for saving and opening files.* <br>
 
+### Find and Replace
+![Main](images/pynote_editmenu.jpg)<br>
+*Edit Menu.* <br>
+
+![Main](images/pynote_findbox.jpg)<br>
+*Dialog Box.* <br>
+
+![Main](images/pynote_replaced.jpg)<br>
+*Replaced the word.* <br>
+
 ---
 # 🎯 Project Goals
 
