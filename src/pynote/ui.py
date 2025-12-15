@@ -108,12 +108,14 @@ class GoToLineDialog:
 
 class FindDialog: #Find Dialog Box Moment
 
-    def __init__(self, parent, text_widget):
+    def __init__(self, parent, text_widget,on_close=None): #added on-close for only 1 dialog box of find
+        self.on_close = on_close #
         self.parent = parent
         self.text = text_widget
         self.last_index = "1.0"
 
         self.dialog = tk.Toplevel(parent)
+        self.dialog.protocol("WM_DELETE_WINDOW", self._close) # handle close event 
         self.dialog.title("Find")
         self.dialog.geometry("320x160")
         self.dialog.resizable(False, False)
