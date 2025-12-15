@@ -2,6 +2,8 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
+from ui import show_shortcuts #imported the shortcuts showing dialog box
+
 APP_TITLE = "PyNote"
 
 
@@ -43,6 +45,13 @@ class PyNoteApp(tk.Tk):
         filemenu.add_separator()
         filemenu.add_command(label='Exit', command=self.quit)
         menu.add_cascade(label='File', menu=filemenu)
+        menu.add_cascade(label="Edit", menu=editmenu)
+        helpmenu = tk.Menu(menu, tearoff=0) #added the help menu
+        helpmenu.add_command(
+            label="Keyboard Shortcuts",
+            command=lambda: show_shortcuts(self)
+        )
+        menu.add_cascade(label="Help", menu=helpmenu)
         self.config(menu=menu)
 
     def _bind_shortcuts(self):
