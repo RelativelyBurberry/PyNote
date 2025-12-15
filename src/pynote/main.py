@@ -4,6 +4,7 @@ from tkinter import filedialog, messagebox, ttk
 
 APP_TITLE = "PyNote"
 
+from editor import MiniMap ##
 
 class PyNoteApp(tk.Tk):
     def __init__(self):
@@ -16,22 +17,43 @@ class PyNoteApp(tk.Tk):
         self._bind_shortcuts()
 
     def _create_widgets(self):
+        # Main paned window
+        self.paned = ttk.PanedWindow(self, orient="horizontal")
+        self.paned.pack(fill="both", expand=True)
+
+        # Editor frame
+        editor_frame = ttk.Frame(self.paned)
+        
         # Text widget with scrollbar
         self.text = tk.Text(self, wrap='word', undo=True)
         self.vsb = ttk.Scrollbar(self, orient='vertical', command=self.text.yview)
-        self.text.configure(yscrollcommand=self.vsb.set)
+        self.text.configure(yscrollcommand=self._on_scroll)
         self.vsb.pack(side='right', fill='y')
         self.text.pack(side='left', fill='both', expand=True)
-
+        self.paned.add(editor_frame, weight=5) ##
+        
         # status bar
         self.status = tk.StringVar()
         self.status.set('Ln 1, Col 0')
         status_bar = ttk.Label(self, textvariable=self.status, anchor='w')
         status_bar.pack(side='bottom', fill='x')
 
+        # Minimpa
+        self.minimap = MiniMap(self.paned, self.text)
+        self.minimap_visible = True
+        self.paned.add(self.minimap, weight=1)
+
+        
         # update cursor position
         self.text.bind('<KeyRelease>', self._update_status)
         self.text.bind('<ButtonRelease>', self._update_status)
+        self.text.bind('<KeyRelease>', lambda e: self.minimap.redraw()) #
+        self.text.bind('<MouseWheel>', lambda e: self.minimap.redraw()) #
+
+    
+    def _on_scroll(self, *args): ##
+        self.vsb.set(*args)
+        self.minimap.redraw()
 
     def _create_menu(self):
         menu = tk.Menu(self)
@@ -43,8 +65,19 @@ class PyNoteApp(tk.Tk):
         filemenu.add_separator()
         filemenu.add_command(label='Exit', command=self.quit)
         menu.add_cascade(label='File', menu=filemenu)
+        viewmenu = tk.Menu(menu, tearoff=0) #####
+        viewmenu.add_command(label="Toggle Mini-map", command=self.toggle_minimap)
+        menu.add_cascade(label="View", menu=viewmenu)
         self.config(menu=menu)
 
+    def toggle_minimap(self): ###
+        if self.minimap_visible:
+            self.paned.forget(self.minimap)
+        else:
+            self.paned.add(self.minimap, weight=1)
+            self.minimap.redraw()
+        self.minimap_visible = not self.minimap_visible
+        
     def _bind_shortcuts(self):
         self.bind('<Control-s>', lambda e: self.save_file())
         self.bind('<Control-o>', lambda e: self.open_file())
