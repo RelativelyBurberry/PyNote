@@ -4,35 +4,89 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 
-**PyNote** is a lightweight, cross-platform desktop text editor built with **Python + Tkinter**. It's designed for college-level contributors: approachable for beginners, with room for intermediate and harder issues (syntax highlighting, plugin system, mini-map, markdown preview).
+---
 
-## 🎯 Project Goals
+# 📝 PyNote
+PyNote is a lightweight, cross-platform desktop text editor built using Python + Tkinter.
+It is designed specifically for college students and beginner open-source contributors, offering:
+- Immediate visual wins (UI, theming, small features)
+- Medium to advanced challenges (file I/O, UI architecture, syntax highlighting)
+- A real, usable application contributors can proudly showcase
 
-* Give new contributors immediate, visible wins (UI, theming, docs)
-* Provide medium/hard tasks that teach useful skills (file I/O, tokenizers, UI architecture)
-* Produce a usable editor students will be proud of
+---
+# ✨ Why PyNote?
+Most beginner editors are either:
+- Too trivial (toy projects), or
+- Too complex (VS Code–level architecture)
+PyNote sits in the sweet spot:
+- Easy to understand
+- Cleanly structured
+- Incrementally extensible
 
-## ✨ Core Features (MVP)
+---
 
-* ✅ Open / Save / Save As
-* ✅ Undo / Redo
-* ✅ Line numbers
-* ✅ Status bar showing line/column
-* ✅ Basic keyboard shortcuts (Ctrl+S, Ctrl+O, Ctrl+Z)
-* ✅ Light / Dark theme toggle
-* ✅ Autosave (configurable)
+# 📸 Screenshots
 
-## 🚀 Nice-to-Have Features (Stretch)
+### Main Editor Window
 
-* Tabbed editing (multiple files)
-* Find & Replace dialog
-* Syntax highlighting for Python / JavaScript / HTML
-* Settings saved to JSON
-* Recent files list
-* Markdown preview (split view)
-* Plugin system (simple hook-based)
-* Spell checking (integrate `pyspellchecker`)
+![Main](images/pynote_main.jpg) <br>
+*A clean and minimal editor interface with status bar and scrollbar.* <br>
 
+### Cursor Tracking & Status Bar
+![Main](images/pynote_cursor.jpg)<br>
+*Live line and column tracking for precise editing.* <br>
+
+### File Menu & Shortcuts
+
+![Main](images/pynote_menu.jpg)<br>
+*Built-in file operations with familiar keyboard shortcuts.* <br>
+
+### Save Dialog
+![Main](images/pynote_saave.jpg)<br>
+*Native OS file dialogs for saving and opening files.* <br>
+
+---
+# 🎯 Project Goals
+
+🟢 Give new contributors immediate, visible wins (UI, theming, docs)
+
+🟡 Provide medium & hard tasks that teach practical skills:
+
+- File I/O
+- UI design patterns
+- Tokenizers and parsers
+
+🔵 Build a real editor, not a throwaway demo
+
+---
+
+# ✨ Core Features (MVP)
+
+- ✅ Open / Save / Save As
+- ✅ Undo / Redo
+- ✅ Line numbers
+- ✅ Status bar (line & column)
+- ✅ Keyboard shortcuts:
+  - `Ctrl + S` → Save
+  - `Ctrl + O` → Open
+  - `Ctrl + Z` → Undo
+  - `Ctrl + Y` → Redo
+- ✅ Light / Dark theme toggle
+- ✅ Configurable autosave
+
+---
+
+# 🚀 Nice-to-Have Features (Stretch Goals)
+- Tabbed editing (multiple files)
+- Find & Replace dialog
+- Syntax highlighting (Python / JS / HTML)
+- Persistent settings (JSON)
+- Recent files list
+- Markdown preview (split view)
+- Plugin system (hook-based)
+- Spell checking (pyspellchecker)
+
+---
 ## 📋 Quickstart
 
 ### Prerequisites
@@ -95,7 +149,42 @@ PyNote/
 ├── LICENSE
 └── requirements.txt
 ```
+---
+## 🧑‍💻 Usage Examples
 
+### Create a New File
+1. Launch **PyNote**
+2. Click **File → New**
+3. Start typing immediately in the editor area
+
+Use this to quickly jot down notes or start drafting a new file.
+
+---
+
+### Open an Existing File
+1. Click **File → Open**
+2. Select a file from your system
+
+Supported formats:
+- `.txt`
+- `.md`
+- `.py`
+- Any plain-text file
+
+The file contents will load directly into the editor.
+
+---
+
+### Save Your Work
+- Press **Ctrl + S** to save the current file
+- If the file is new, PyNote will prompt for a save location
+- Use **File → Save As** to save under a different name or format
+
+---
+
+### Track Cursor Position
+The status b
+---
 ## 🤝 Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
