@@ -1,4 +1,5 @@
 # src/pynote/main.py
+from ui import FindReplaceDialog
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
@@ -43,6 +44,12 @@ class PyNoteApp(tk.Tk):
         filemenu.add_separator()
         filemenu.add_command(label='Exit', command=self.quit)
         menu.add_cascade(label='File', menu=filemenu)
+        editmenu = tk.Menu(menu, tearoff=0)
+        editmenu.add_command(
+            label="Find & Replace",
+            command=lambda: FindReplaceDialog(self, self.text)
+        )
+        menu.add_cascade(label="Edit", menu=editmenu)
         self.config(menu=menu)
 
     def _bind_shortcuts(self):
