@@ -42,6 +42,11 @@ class PyNoteApp(tk.Tk):
         filemenu.add_command(label='Save As', command=self.save_as)
         filemenu.add_separator()
         filemenu.add_command(label='Exit', command=self.quit)
+         filemenu.add_command(
+            label='New',
+            accelerator='Ctrl+N',
+            command=self.new_file
+        ) #added to file menu
         menu.add_cascade(label='File', menu=filemenu)
         self.config(menu=menu)
 
@@ -49,6 +54,7 @@ class PyNoteApp(tk.Tk):
         self.bind('<Control-s>', lambda e: self.save_file())
         self.bind('<Control-o>', lambda e: self.open_file())
         self.bind('<Control-n>', lambda e: self.new_file())
+        self.bind('<Command-n>', lambda e: self.new_file()) #new file in MacOS and Linux
         self.bind('<Control-z>', lambda e: self.text.event_generate('<<Undo>>'))
         self.bind('<Control-y>', lambda e: self.text.event_generate('<<Redo>>'))
 
@@ -109,6 +115,7 @@ class PyNoteApp(tk.Tk):
         col = idx[1]
         self.status.set(f'Ln {line}, Col {col}')
 
+    #shows unsaved changes
     def _confirm_discard(self):
         if self.text.edit_modified():
             resp = messagebox.askyesnocancel(
@@ -121,6 +128,7 @@ class PyNoteApp(tk.Tk):
                 self.save_file()
         return True
 
+    
 
 if __name__ == '__main__':
     app = PyNoteApp()
