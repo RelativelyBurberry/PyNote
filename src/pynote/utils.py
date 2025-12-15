@@ -2,6 +2,7 @@
 """
 Utility functions for PyNote editor.
 """
+#yes util does exist we need the load and save settings for preferences across all sessions
 
 import os
 import json
