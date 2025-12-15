@@ -4,10 +4,14 @@ from tkinter import filedialog, messagebox, ttk
 
 APP_TITLE = "PyNote"
 
+from utils import load_settings,save_settings # persistence moment
+import os # for the filename and not just the path
 
 class PyNoteApp(tk.Tk):
     def __init__(self):
         super().__init__()
+        self.settings = load_settings() ##persistence moment
+        self.recent_files = self.settings.get('recent_files', [])##
         self.title(APP_TITLE)
         self.geometry('800x600')
         self._filepath = None
@@ -43,8 +47,54 @@ class PyNoteApp(tk.Tk):
         filemenu.add_separator()
         filemenu.add_command(label='Exit', command=self.quit)
         menu.add_cascade(label='File', menu=filemenu)
+        self.recent_menu = tk.Menu(menu, tearoff=0) ##recent files menu moment
+        menu.add_cascade(label="Recent Files", menu=self.recent_menu)
+
+        self._update_recent_files_menu()
         self.config(menu=menu)
 
+    def _add_to_recent_files(self, path): #adding to recent_files in utils
+        if path in self.recent_files: 
+            self.recent_files.remove(path)
+        self.recent_files.insert(0, path)
+        self.recent_files = self.recent_files[:5]
+
+        self.settings['recent_files'] = self.recent_files
+        save_settings(self.settings)
+        print("RECENT FILES:", self.recent_files)
+        self._update_recent_files_menu()
+    
+    def _update_recent_files_menu(self):#update / show
+        self.recent_menu.delete(0, tk.END)
+        if not self.recent_files:
+            self.recent_menu.add_command(
+                label="No recent files",
+                state="disabled"
+            )
+            return
+        for path in self.recent_files:
+            filename = os.path.basename(path)
+            self.recent_menu.add_command(
+                label=filename,
+                command=lambda p=path: self._open_recent_file(p)
+            )
+
+    def _open_recent_file(self, path): # file opens when u click on it
+        if not self._confirm_discard():
+            return
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = f.read()
+            self.text.delete('1.0', tk.END)
+            self.text.insert('1.0', data)
+            self._filepath = path
+            self.title(f"{os.path.basename(path)}")
+            self.text.edit_modified(False)
+            self._add_to_recent_files(path)
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to open file:\n{e}")
+
+    
     def _bind_shortcuts(self):
         self.bind('<Control-s>', lambda e: self.save_file())
         self.bind('<Control-o>', lambda e: self.open_file())
@@ -99,6 +149,7 @@ class PyNoteApp(tk.Tk):
                 self._filepath = path
                 self.title(f"{APP_TITLE} - {path}")
                 self.text.edit_modified(False)
+                self._add_to_recent_files(path) #important, when u save it, it gets added
                 messagebox.showinfo('Saved', 'File saved successfully')
             except Exception as e:
                 messagebox.showerror('Error', f'Failed to save file: {str(e)}')
