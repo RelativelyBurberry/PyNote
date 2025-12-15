@@ -4,6 +4,7 @@ from tkinter import filedialog, messagebox, ttk
 
 APP_TITLE = "PyNote"
 
+import os #we need this
 
 class PyNoteApp(tk.Tk):
     def __init__(self):
@@ -97,7 +98,7 @@ class PyNoteApp(tk.Tk):
                 with open(path, 'w', encoding='utf-8') as f:
                     f.write(self.text.get('1.0', tk.END))
                 self._filepath = path
-                self.title(f"{APP_TITLE} - {path}")
+                self.title(f"{APP_TITLE} - {os.path.basename(path)}") # Update title with filename
                 self.text.edit_modified(False)
                 messagebox.showinfo('Saved', 'File saved successfully')
             except Exception as e:
