@@ -4,7 +4,7 @@ from tkinter import filedialog, messagebox, ttk
 
 APP_TITLE = "PyNote"
 
-from ui import show_find_dialog #import the dialog
+from ui import FindDialog,show_find_dialog #import the dialog
 
 class PyNoteApp(tk.Tk):
     def __init__(self):
@@ -54,13 +54,31 @@ class PyNoteApp(tk.Tk):
         menu.add_cascade(label="Edit", menu=editmenu)
         self.config(menu=menu)
 
+    def open_find_dialog(self): #find the dialog and check params
+        if self.find_dialog:
+            try:
+                self.find_dialog.dialog.lift()
+                self.find_dialog.dialog.focus_force()
+            except Exception:
+                self.find_dialog = None
+            return
+
+        self.find_dialog = FindDialog(
+            self,
+            self.text,
+            on_close=self._on_find_dialog_close
+        )
+
+    def _on_find_dialog_close(self): #and then close
+        self.find_dialog = None
+    
     def _bind_shortcuts(self):
         self.bind('<Control-s>', lambda e: self.save_file())
         self.bind('<Control-o>', lambda e: self.open_file())
         self.bind('<Control-n>', lambda e: self.new_file())
         self.bind('<Control-z>', lambda e: self.text.event_generate('<<Undo>>'))
         self.bind('<Control-y>', lambda e: self.text.event_generate('<<Redo>>'))
-        self.bind('<Control-f>', lambda e: show_find_dialog(self, self.text)) #ctrl f key binding
+        self.bind('<Control-f>', lambda e: self.open_find_dialog()) #ctrl f key binding #different lambda for only 1 dialog box
 
     def new_file(self):
         if self._confirm_discard():
