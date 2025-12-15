@@ -45,7 +45,7 @@ class PyNoteApp(tk.Tk):
         filemenu.add_separator()
         filemenu.add_command(label='Exit', command=self.quit)
         menu.add_cascade(label='File', menu=filemenu)
-        menu.add_cascade(label="Edit", menu=editmenu)
+        #menu.add_cascade(label="Edit", menu=editmenu)  ###it was not the import it was this file chat, a fiel from a previous version that i forgot to remove
         helpmenu = tk.Menu(menu, tearoff=0) #added the help menu
         helpmenu.add_command(
             label="Keyboard Shortcuts",
