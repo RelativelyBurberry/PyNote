@@ -6,7 +6,6 @@ UI components (menus, dialogs) for PyNote.
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 
-
 class AboutDialog:
     """About dialog for PyNote."""
     
