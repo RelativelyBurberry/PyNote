@@ -106,7 +106,90 @@ class GoToLineDialog:
         except ValueError:
             messagebox.showerror('Error', 'Please enter a valid number')
 
+class FindDialog: #Find Dialog Box Moment
 
+    def __init__(self, parent, text_widget):
+        self.parent = parent
+        self.text = text_widget
+        self.last_index = "1.0"
+
+        self.dialog = tk.Toplevel(parent)
+        self.dialog.title("Find")
+        self.dialog.geometry("320x160")
+        self.dialog.resizable(False, False)
+
+        self.find_var = tk.StringVar()
+        self.case_sensitive = tk.BooleanVar()
+
+        self._build_ui()
+
+    def _build_ui(self):
+        frame = tk.Frame(self.dialog, padx=10, pady=10)
+        frame.pack(fill="both", expand=True)
+
+        tk.Label(frame, text="Find:").grid(row=0, column=0, sticky="w")
+        entry = tk.Entry(frame, textvariable=self.find_var, width=28)
+        entry.grid(row=0, column=1, columnspan=2, pady=5)
+        entry.focus()
+
+        tk.Checkbutton(
+            frame, text="Case sensitive", variable=self.case_sensitive
+        ).grid(row=1, column=1, sticky="w")
+
+        tk.Button(frame, text="Next", width=8, command=self.find_next).grid(
+            row=2, column=1, pady=10
+        )
+        tk.Button(frame, text="Previous", width=8, command=self.find_prev).grid(
+            row=2, column=2, pady=10
+        )
+
+    #find logiks moment
+
+    def _search(self, backwards=False):
+        term = self.find_var.get()
+        if not term:
+            return
+
+        self.text.tag_remove("find_highlight", "1.0", tk.END)
+
+        flags = {}
+        if not self.case_sensitive.get():
+            flags["nocase"] = True
+
+        start = self.last_index
+        if backwards:
+            start = self.text.index(f"{start} -1c")
+
+        pos = self.text.search(
+            term,
+            start,
+            stopindex=tk.END if not backwards else "1.0",
+            backwards=backwards,
+            **flags
+        )
+
+        if not pos:
+            self.last_index = "1.0"
+            return
+
+        end = f"{pos}+{len(term)}c"
+        self.text.tag_add("find_highlight", pos, end)
+        self.text.tag_config("find_highlight", background="yellow")
+
+        self.text.mark_set(tk.INSERT, end)
+        self.text.see(pos)
+
+        self.last_index = end
+
+    def find_next(self):
+        self._search(backwards=False)
+
+    def find_prev(self):
+        self._search(backwards=True)
+
+def show_find_dialog(parent, text_widget): ## to call the find 
+    FindDialog(parent, text_widget)
+    
 def show_about(parent):
     """Show about dialog."""
     AboutDialog(parent)
