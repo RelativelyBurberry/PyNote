@@ -34,8 +34,8 @@ def load_settings():
     config_file = get_config_dir() / 'settings.json'
     default_settings = {
         'theme': 'light',
-        'autosave': False,
-        'autosave_interval': 300,  # seconds
+        'autosave': True,  #made this True
+        'autosave_interval': 1,  # seconds
         'tab_size': 4,
         'font_family': 'Courier New',
         'font_size': 12,
