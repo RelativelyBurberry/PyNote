@@ -53,3 +53,39 @@ class EditorWidget:
         except Exception:
             pass
 
+
+class MiniMap(tk.Canvas): ##
+    def __init__(self, parent, text_widget, width=80):
+        super().__init__(parent, width=width, highlightthickness=0)
+        self.text = text_widget
+        self.scale = 4  # lines per pixel
+
+        self.bind("<Button-1>", self.on_click)
+
+    def redraw(self):
+        self.delete("all")
+
+        height = self.winfo_height()
+        width = self.winfo_width()
+        if height <= 1:
+            return
+
+        # Blue bar ahh
+        self.create_rectangle(0, 0, width, height, fill="#d0d0d0", outline="")
+
+        # View
+        first, last = self.text.yview()
+        y1 = first * height
+        y2 = last * height
+
+        self.create_rectangle(
+            0, y1, width, y2,
+            fill="#8888ff", outline=""
+        )
+
+
+##showing the minimap
+    def on_click(self, event):
+        height = self.winfo_height()
+        fraction = event.y / height
+        self.text.yview_moveto(fraction)
