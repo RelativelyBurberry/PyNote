@@ -111,3 +111,46 @@ def show_about(parent):
     """Show about dialog."""
     AboutDialog(parent)
 
+class PreferencesDialog: #Preferences DIalog box to choose width
+    def __init__(self, parent, settings, on_apply):
+        self.parent = parent
+        self.settings = settings
+        self.on_apply = on_apply
+
+        self.dialog = tk.Toplevel(parent)
+        self.dialog.title("Preferences")
+        self.dialog.geometry("260x160")
+        self.dialog.resizable(False, False)
+
+        self.tab_size = tk.IntVar(value=settings.get('tab_size', 4))
+
+        self._build_ui()
+
+    def _build_ui(self):
+        frame = tk.Frame(self.dialog, padx=10, pady=10)
+        frame.pack(fill="both", expand=True)
+
+        tk.Label(frame, text="Tab width (spaces):").pack(anchor="w")
+
+        for size in (2, 4, 8):
+            tk.Radiobutton(
+                frame,
+                text=str(size),
+                variable=self.tab_size,
+                value=size
+            ).pack(anchor="w")
+
+        tk.Button(
+            frame,
+            text="Apply",
+            width=10,
+            command=self._apply
+        ).pack(pady=10)
+
+    def _apply(self):
+        self.settings['tab_size'] = self.tab_size.get()
+        self.on_apply(self.tab_size.get())
+        self.dialog.destroy()
+
+def show_preferences(parent, settings, on_apply): ## to apply the preferences
+    PreferencesDialog(parent, settings, on_apply)
