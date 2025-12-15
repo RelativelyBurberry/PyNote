@@ -4,10 +4,21 @@ from tkinter import filedialog, messagebox, ttk
 
 APP_TITLE = "PyNote"
 
+from utils import load_settings, save_settings #we need those thingies chat
+#i wrote all the comments myself its not AI
 
 class PyNoteApp(tk.Tk):
     def __init__(self):
         super().__init__()
+
+        #Sub Issue 2 -> Persistent across all sessions
+        #This saves the visibility of status bar, so when pynote restarts it remembers if it was on or off
+        self.settings = load_settings() #
+        self.show_status_bar = tk.BooleanVar( #
+            value=self.settings.get('show_status_bar', True) #
+        )
+
+        
         self.title(APP_TITLE)
         self.geometry('800x600')
         self._filepath = None
@@ -26,12 +37,28 @@ class PyNoteApp(tk.Tk):
         # status bar
         self.status = tk.StringVar()
         self.status.set('Ln 1, Col 0')
-        status_bar = ttk.Label(self, textvariable=self.status, anchor='w')
-        status_bar.pack(side='bottom', fill='x')
+        self.status_bar = ttk.Label(self, textvariable=self.status, anchor='w')  # Added self to both of these to make it a part of the object
+        self.status_bar.pack(side='bottom', fill='x') #
 
+
+        # Apply the saved states
+        if not self.show_status_bar.get(): #
+            self.status_bar.pack_forget() #
+            
         # update cursor position
         self.text.bind('<KeyRelease>', self._update_status)
         self.text.bind('<ButtonRelease>', self._update_status)
+
+    #toggle function
+    def toggle_status_bar(self):
+        if self.show_status_bar.get():
+            self.status_bar.pack(side='bottom', fill='x')
+        else:
+            self.status_bar.pack_forget()
+
+        # Persist setting
+        self.settings['show_status_bar'] = self.show_status_bar.get()
+        save_settings(self.settings)
 
     def _create_menu(self):
         menu = tk.Menu(self)
@@ -43,6 +70,13 @@ class PyNoteApp(tk.Tk):
         filemenu.add_separator()
         filemenu.add_command(label='Exit', command=self.quit)
         menu.add_cascade(label='File', menu=filemenu)
+        viewmenu = tk.Menu(menu, tearoff=0) ## Sub-Issue 3 -> Menu
+        viewmenu.add_checkbutton( #
+            label="Status Bar", #
+            variable=self.show_status_bar,
+            command=self.toggle_status_bar
+        )
+        menu.add_cascade(label="View", menu=viewmenu)
         self.config(menu=menu)
 
     def _bind_shortcuts(self):
@@ -51,6 +85,12 @@ class PyNoteApp(tk.Tk):
         self.bind('<Control-n>', lambda e: self.new_file())
         self.bind('<Control-z>', lambda e: self.text.event_generate('<<Undo>>'))
         self.bind('<Control-y>', lambda e: self.text.event_generate('<<Redo>>'))
+        self.bind('<Control-b>', lambda e: self._toggle_status_shortcut()) # Sub Issue 1 ->Binding key to Ctrl B
+
+    #and the definition for that shortcut
+    def _toggle_status_shortcut(self): # 
+        self.show_status_bar.set(not self.show_status_bar.get()) 
+        self.toggle_status_bar() 
 
     def new_file(self):
         if self._confirm_discard():
