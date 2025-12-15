@@ -2,10 +2,13 @@
 """
 UI components (menus, dialogs) for PyNote.
 """
+import sys #added this for the cross-platform thingie
 
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 
+def shortcut_key(): ##cross platform retrn value
+    return "Cmd" if sys.platform == "darwin" else "Ctrl"
 
 class AboutDialog:
     """About dialog for PyNote."""
@@ -105,6 +108,63 @@ class GoToLineDialog:
                 )
         except ValueError:
             messagebox.showerror('Error', 'Please enter a valid number')
+
+class ShortcutGuideDialog: ### Dialog Box of Shortcuts
+
+    def __init__(self, parent):
+        self.parent = parent
+        self.dialog = tk.Toplevel(parent)
+        self.dialog.title("Keyboard Shortcuts")
+        self.dialog.geometry("420x320")
+        self.dialog.resizable(False, False)
+        self._create_widgets()
+
+    def _create_widgets(self):
+        key = shortcut_key()
+
+        container = tk.Frame(self.dialog, padx=15, pady=10)
+        container.pack(fill="both", expand=True)
+
+        def section(title):
+            tk.Label(
+                container,
+                text=title,
+                font=("Arial", 11, "bold")
+            ).pack(anchor="w", pady=(10, 4))
+
+        def item(name, combo):
+            tk.Label(
+                container,
+                text=f"{name:<20} {combo}",
+                font=("Courier New", 10)
+            ).pack(anchor="w")
+
+        # File Shortcuts
+        section("File")
+        item("New File", f"{key}+N")
+        item("Open File", f"{key}+O")
+        item("Save", f"{key}+S")
+        item("Save As", f"{key}+Shift+S")
+
+        # Editing Shortcuts
+        section("Edit")
+        item("Undo", f"{key}+Z")
+        item("Redo", f"{key}+Y")
+        item("Find", f"{key}+F")
+
+        # View Shortcuts
+        section("View")
+        item("Toggle Status Bar", f"{key}+B")
+
+        tk.Button(
+            container,
+            text="Close",
+            width=10,
+            command=self.dialog.destroy
+        ).pack(pady=15)
+
+def show_shortcuts(parent): #to show the dialog box
+    ShortcutGuideDialog(parent)
 
 
 def show_about(parent):
