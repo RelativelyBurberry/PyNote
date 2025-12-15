@@ -4,6 +4,7 @@ from tkinter import filedialog, messagebox, ttk
 
 APP_TITLE = "PyNote"
 
+from utils import count_words, count_chars #added this thingie coz those modules already existed
 
 class PyNoteApp(tk.Tk):
     def __init__(self):
@@ -107,7 +108,10 @@ class PyNoteApp(tk.Tk):
         idx = self.text.index(tk.INSERT).split('.')
         line = idx[0]
         col = idx[1]
-        self.status.set(f'Ln {line}, Col {col}')
+        content = self.text.get('1.0', tk.END) #text content
+        words = count_words(content) #word count
+        chars = count_chars(content) #char count
+        self.status.set(f'Ln {line}, Col {col}|  Words: {words} | Chars: {chars}') #added word count and char count on the bottom thingie
 
     def _confirm_discard(self):
         if self.text.edit_modified():
