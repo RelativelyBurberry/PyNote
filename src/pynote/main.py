@@ -4,10 +4,14 @@ from tkinter import filedialog, messagebox, ttk
 
 APP_TITLE = "PyNote"
 
+from utils import load_settings, save_settings# load and save settings for persistence
+from ui import show_preferences # dialog box
 
 class PyNoteApp(tk.Tk):
     def __init__(self):
         super().__init__()
+        self.settings = load_settings()# persistence moment
+        self.tab_size = self.settings.get('tab_size', 4)#
         self.title(APP_TITLE)
         self.geometry('800x600')
         self._filepath = None
@@ -18,6 +22,7 @@ class PyNoteApp(tk.Tk):
     def _create_widgets(self):
         # Text widget with scrollbar
         self.text = tk.Text(self, wrap='word', undo=True)
+        self.text.bind('<Tab>', self._insert_tab_spaces)# key event ahh moment (canon event)
         self.vsb = ttk.Scrollbar(self, orient='vertical', command=self.text.yview)
         self.text.configure(yscrollcommand=self.vsb.set)
         self.vsb.pack(side='right', fill='y')
@@ -33,6 +38,11 @@ class PyNoteApp(tk.Tk):
         self.text.bind('<KeyRelease>', self._update_status)
         self.text.bind('<ButtonRelease>', self._update_status)
 
+    def _insert_tab_spaces(self, event): #####
+        spaces = ' ' * self.tab_size
+        self.text.insert(tk.INSERT, spaces)
+        return "break"  # Preventing  default tab behavior
+
     def _create_menu(self):
         menu = tk.Menu(self)
         filemenu = tk.Menu(menu, tearoff=0)
@@ -43,7 +53,21 @@ class PyNoteApp(tk.Tk):
         filemenu.add_separator()
         filemenu.add_command(label='Exit', command=self.quit)
         menu.add_cascade(label='File', menu=filemenu)
+        prefmenu = tk.Menu(menu, tearoff=0) #### create a preference menu
+        prefmenu.add_command(
+            label="Tab Width",
+            command=self.open_preferences
+        )
+        menu.add_cascade(label="Preferences", menu=prefmenu)
         self.config(menu=menu)
+
+    def open_preferences(self): ### (open it obviously)
+        show_preferences(self, self.settings, self.apply_tab_size)
+        
+    def apply_tab_size(self, size): ### (i mean)
+        self.tab_size = size
+        self.settings['tab_size'] = size
+        save_settings(self.settings)
 
     def _bind_shortcuts(self):
         self.bind('<Control-s>', lambda e: self.save_file())
