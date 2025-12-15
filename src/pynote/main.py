@@ -4,6 +4,7 @@ from tkinter import filedialog, messagebox, ttk
 
 APP_TITLE = "PyNote"
 
+from ui import show_find_dialog #import the dialog
 
 class PyNoteApp(tk.Tk):
     def __init__(self):
@@ -43,6 +44,14 @@ class PyNoteApp(tk.Tk):
         filemenu.add_separator()
         filemenu.add_command(label='Exit', command=self.quit)
         menu.add_cascade(label='File', menu=filemenu)
+        editmenu = tk.Menu(menu, tearoff=0) ## Adding edit menu for the find dialog boxie
+        editmenu.add_command(
+            label="Find",
+            accelerator="Ctrl+F",
+            command=lambda: show_find_dialog(self, self.text)
+        )
+
+        menu.add_cascade(label="Edit", menu=editmenu)
         self.config(menu=menu)
 
     def _bind_shortcuts(self):
@@ -51,6 +60,7 @@ class PyNoteApp(tk.Tk):
         self.bind('<Control-n>', lambda e: self.new_file())
         self.bind('<Control-z>', lambda e: self.text.event_generate('<<Undo>>'))
         self.bind('<Control-y>', lambda e: self.text.event_generate('<<Redo>>'))
+        self.bind('<Control-f>', lambda e: show_find_dialog(self, self.text)) #ctrl f key binding
 
     def new_file(self):
         if self._confirm_discard():
